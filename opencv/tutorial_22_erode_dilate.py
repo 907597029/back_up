@@ -24,7 +24,7 @@ def erode_demo(image):
     cv.imshow("binary", binary)
 
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
-    dst = cv.erode(binary, kernel=kernel)
+    dst = cv.erode(binary, kernel=kernel)#腐蚀
     cv.imshow("erode_demo", dst)
 
 
@@ -48,16 +48,17 @@ def dilate_demo(image):
 
 def main():
     src = cv.imread("01.jpg")
-    # erode_demo(src)
-    # dilate_demo(src)
+    erode_demo(src)
+    dilate_demo(src)
 
     # 彩色图像腐蚀，膨胀
     img = cv.imread("lena.jpg")
     cv.imshow("img", img)
-    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
-    # dst = cv.dilate(img, kernel=kernel)
-    dst = cv.erode(img, kernel=kernel)
-    cv.imshow("dilate", dst)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (15, 15))
+    dst1 = cv.dilate(img, kernel=kernel)
+    dst2 = cv.erode(img, kernel=kernel)
+    cv.imshow("dilate", dst1)
+    cv.imshow("erode", dst2)
     cv.waitKey(0)  # 等有键输入或者1000ms后自动将窗口消除，0表示只用键输入结束窗口
     cv.destroyAllWindows()  # 关闭所有窗口
 

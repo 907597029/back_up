@@ -18,8 +18,8 @@ import numpy as np
 顶帽：原图像与开操作之间的差值图像
 黑帽：比操作与原图像直接的差值图像
 形态学梯度：其实就是一幅图像膨胀与腐蚀的差别。 结果看上去就像前景物体的轮廓
-基本梯度：膨胀后图像减去腐蚀后图像得到的差值图像。
-内部梯度：用原图减去腐蚀图像得到的差值图像。
+基本梯度：膨胀后图像减去腐蚀后图像得到的差值图像。 gradient
+内部梯度：用原图减去腐蚀图像得到的差值图像。     gradient2
 外部梯度：膨胀后图像减去原图像得到的差值图像。
 """
 
@@ -42,7 +42,7 @@ def open_demo(image):
 def close_demo(image):
     print(image.shape)
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-    ret, binary = cv.threshold(gray, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
+    ret, binary = cv.morphologyEx(gray, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
     cv.imshow("binary", binary)
 
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
@@ -60,6 +60,42 @@ def other_morphology_demo(image):
 
     cv.imshow("top_hat_demo", dst)
 
+def top_hat_demo(image):
+    gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+    dst = cv.morphologyEx(gray, cv.MORPH_TOPHAT, kernel)
+    cimage = np.array(gray.shape, np.uint8)
+    cimage = 100
+    dst = cv.add(dst, cimage)
+    cv.imshow("top_hat_demo", dst)
+
+
+def black_hat_demo(image):
+    gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+    dst = cv.morphologyEx(gray, cv.MORPH_BLACKHAT, kernel)
+    cimage = np.array(gray.shape, np.uint8)
+    cimage = 100
+    dst = cv.add(dst, cimage)
+    cv.imshow("black_hat_demo", dst)
+
+
+def hat_binary_demo(image):
+    gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    ret, binary = cv.threshold(gray, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+    dst = cv.morphologyEx(binary, cv.MORPH_GRADIENT, kernel)
+    cv.imshow("hat_binary_demo", dst)
+
+
+def gradient_demo(image):
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+    dm = cv.dilate(image, kernel)
+    em = cv.erode(image, kernel)
+    dst1 = cv.subtract(image, em) #internol groadient
+    dst2 = cv.subtract(dm, image) #externol groadient
+    cv.imshow("internol groadient", dst1)
+    cv.imshow("externol groadient", dst2)
 
 def main():
     src = cv.imread("lena.jpg")
@@ -77,7 +113,9 @@ def main():
     # tophat, blackhat
 
     top_hat_demo(src)
-
+    black_hat_demo(src)
+    hat_binary_demo(src)
+    gradient_demo(src)
     cv.waitKey(0)  # 等有键输入或者1000ms后自动将窗口消除，0表示只用键输入结束窗口
     cv.destroyAllWindows()  # 关闭所有窗口
 
