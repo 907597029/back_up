@@ -9,7 +9,9 @@ deliveryData = genfromtxt(dataPath, delimiter=',')
 print("data",deliveryData)
 
 X = deliveryData[:, :-1]
+print("X\n",X)
 Y = deliveryData[:, -1]
+print("Y\n",Y)
 
 regr = linear_model.LinearRegression()
 
